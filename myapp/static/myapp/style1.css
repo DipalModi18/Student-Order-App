@@ -1,0 +1,11 @@
+.hbar1 {
+    display: inline;
+    margin: 15px;
+}
+
+h1 {
+    background-color: white;
+    color: darkblue;
+    font-size: 2em;
+    position: relative
+}
