@@ -28,11 +28,13 @@ def findcourses(request):
         if form.is_valid():
             name = form.cleaned_data['name']
             length = form.cleaned_data['length']
-            topics = Topic.objects.filter(length=length)
-            courselist = []
-            for top in topics:
-                courselist = courselist + list(top.courses.all())
-            return render(request, 'myapp/results.html', {'courselist':courselist, 'name':name})
+            max_price = form.cleaned_data['max_price']
+
+            if length == 0:
+                courselist = Course.objects.filter(price__lte=max_price)
+            else:
+                courselist = Course.objects.filter(topic__length=length, price__lte=max_price)
+            return render(request, 'myapp/results.html', {'courselist': courselist, 'name':name, 'length': length})
         else:
             return HttpResponse('Invalid data')
     else:
