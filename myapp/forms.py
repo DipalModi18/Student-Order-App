@@ -1,4 +1,5 @@
 from django import forms
+from myapp.models import Order, Review
 from django.core.exceptions import ValidationError
 
 
@@ -16,6 +17,23 @@ class SearchForm(forms.Form):
     ]
     name = forms.CharField(max_length=100, required=False, label="Student Name:")
     length = forms.TypedChoiceField(widget=forms.RadioSelect, choices=LENGTH_CHOICES, coerce=int,
-                                    label="Preferred course duration:", required=False)
+                                    label="Preferred course duration:", required=False, empty_value=0)
     max_price = forms.IntegerField(label="Maximum Price", validators=[validate_max_price])
+
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['courses', 'student', 'order_status']
+        widgets = {'courses': forms.CheckboxSelectMultiple(), 'order_type':forms.RadioSelect}
+        labels = {'student': u'Student Name', }
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['reviewer', 'course', 'comments', 'rating']
+        widgets = {'course': forms.RadioSelect()}
+        labels = {'reviewer': "Please enter a valid email",
+                  'rating': "Rating: An integer between 1 (worst) and 5 (best)", }
 

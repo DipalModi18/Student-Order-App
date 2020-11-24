@@ -1,0 +1,18 @@
+{% extends 'myapp/base.html' %}
+
+<h1>{% block myhdg %}Order is {{ order.order_status }} for student {{ order.student }}{% endblock %}</h1>
+
+{% block body_block %}
+    {% if courses %}
+        <h2>List of Courses</h2>
+        <ol>
+            {% for course in courses %}
+                <li>
+                        {{ course.title}} - {{ course.topic }}
+                </li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <strong>No Courses are selected in this order!</strong>
+    {% endif %}
+{% endblock %}

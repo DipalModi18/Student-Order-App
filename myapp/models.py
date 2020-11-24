@@ -19,6 +19,7 @@ class Course(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     for_everyone = models.BooleanField(default=True)
     description = models.TextField(blank=True)
+    num_reviews = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -56,5 +57,16 @@ class Order(models.Model):
         for course in self.courses.all():
             cost = cost + course.price
         return cost
+
+
+class Review(models.Model):
+    reviewer = models.EmailField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField()
+    comments = models.TextField(blank=True)
+    date = models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return "Reviewer {} has provided rating {} for the Course {}".format(self.reviewer, self.course, self.rating)
 
 

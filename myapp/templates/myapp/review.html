@@ -1,0 +1,14 @@
+{% extends 'myapp/base.html' %}
+
+{% block myhdg %}
+    {{ error_msg }}
+{% endblock %}
+
+{% block body_block %}
+    <form action="{% url 'myapp:review_view' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" name="submit1" value="Post Review" />
+    </form>
+
+{% endblock %}
