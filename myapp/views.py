@@ -1,8 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from .models import Topic, Course, Student, Order
 from django.shortcuts import get_object_or_404, render
 from .forms import SearchForm, OrderForm, ReviewForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
+from datetime import datetime
 
 
 # Create your views here.
@@ -12,7 +16,15 @@ def index(request):
 
 
 def about(request):
-    return render(request, 'myapp/about.html')
+    if 'about_visits' in request.COOKIES:
+        visit_count = int(request.COOKIES['about_visits'])
+        visit_count += 1
+    else:
+        visit_count = 1
+        
+    response = render(request, 'myapp/about.html', {'number_of_visits': visit_count})
+    response.set_cookie('about_visits', visit_count, max_age=300)
+    return response
 
 
 def detail(request, topic_id):
@@ -70,7 +82,7 @@ def review_view(request):
         if form.is_valid():
             rating = form.cleaned_data['rating']
             if 1 <= rating <= 5:
-                review = form.save()
+                review = form.save(commit=False)
                 course = review.course
                 course.num_reviews = course.num_reviews + 1
                 review.save()
@@ -85,3 +97,46 @@ def review_view(request):
         form = ReviewForm()
         return render(request, 'myapp/review.html', {'form': form})
 
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                current_time = datetime.now()
+                request.session['last_login'] = str(current_time.ctime())
+                request.session.set_expiry(3600)
+                return HttpResponseRedirect(reverse('myapp:index'))
+            else:
+                return HttpResponse('Your account is disabled.')
+        else:
+            return HttpResponse('Invalid login details.')
+    else:
+        return render(request, 'myapp/login.html')
+
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse(('myapp:index')))
+
+
+def myaccount(request):
+    try:
+        current_user = Student.objects.get(id=request.user.id)
+    except Student.DoesNotExist:
+        current_user = None
+
+    if current_user:
+        registered_courses = current_user.registered_courses.all()
+        interested_topics = current_user.interested_in.all()
+
+        return render(request, 'myapp/myaccount.html', {'first_name': current_user.first_name,
+                                                       'last_name': current_user.last_name,
+                                                       'interested_topics': interested_topics,
+                                                       'registered_courses': registered_courses})
+    else:
+        return HttpResponse("<p>You are not a registered student</p>")

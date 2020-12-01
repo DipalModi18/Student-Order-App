@@ -17,5 +17,6 @@
     {% else %}
         <strong>There are no available topics!</strong>
     {% endif %}
+    <p>Last login at: {{ request.session.last_login }}</p>
     <p><a href="{% url 'myapp:about' %}">About Page</a></p>
 {% endblock %}

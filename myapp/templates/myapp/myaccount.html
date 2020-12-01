@@ -1,0 +1,23 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %} My Account {% endblock %}
+
+{% block myhdg %} Hello {{ first_name }} {{ last_name }}! {% endblock %}
+
+{% block  body_block %}
+    <p>First name: <b>{{ first_name }}</b></p>
+    <p>Last name: <b>{{ last_name }}</b></p>
+    <h3>Topics Interested In:</h3>
+    <ol>
+        {% for topic in interested_topics %}
+            <li>{{ topic.name }}</li>
+        {% endfor %}
+    </ol>
+
+    <h3>Courses:</h3>
+    <ol>
+        {% for course in registered_courses %}
+            <li> {{ course.title }} </li>
+        {% endfor %}
+    </ol>
+{% endblock %}
