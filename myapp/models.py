@@ -58,6 +58,9 @@ class Order(models.Model):
             cost = cost + course.price
         return cost
 
+    def total_items(self):
+        return self.courses.count()
+
 
 class Review(models.Model):
     reviewer = models.EmailField()

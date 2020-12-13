@@ -7,7 +7,8 @@ class TopicAdmin(admin.ModelAdmin):
 
 
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'topic', 'price', 'for_everyone', 'description')
+    fields = [('title', 'topic'), ('price', 'num_reviews', 'for_everyone')]
+    list_display = ('title', 'topic', 'price')
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -15,7 +16,8 @@ class StudentAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('student', 'order_status', 'order_date')
+    fields = ['courses', ('student', 'order_status', 'order_date')]
+    list_display = ('id', 'student', 'order_status', 'order_date', 'total_items')
 
 
 class ReviewAdmin(admin.ModelAdmin):
