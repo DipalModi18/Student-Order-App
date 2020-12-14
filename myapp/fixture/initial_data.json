@@ -1,0 +1,65 @@
+[
+{
+  "model": "myapp.topic",
+  "pk": 1,
+  "fields": {
+    "name": "My Topic",
+    "length": 10
+  }
+},
+{
+  "model": "myapp.course",
+  "pk": 17,
+  "fields": {
+    "title": "My Course",
+    "topic": 4,
+    "price": "89.99",
+    "for_everyone": true,
+    "num_reviews": 1,
+    "description": "My description"
+  }
+},
+{
+  "model": "myapp.student",
+  "pk": 3,
+  "fields": {
+    "level": "HS",
+    "address": "3403 Peter Street",
+    "province": "ON",
+    "registered_courses": [
+      1,
+      2,
+      12,
+      16
+    ],
+    "interested_in": [
+      3,
+      4
+    ]
+  }
+},
+{
+  "model": "myapp.order",
+  "pk": 1,
+  "fields": {
+    "student": 2,
+    "order_status": 1,
+    "order_date": "2020-10-11",
+    "courses": [
+      4,
+      8
+    ]
+  }
+},
+{
+  "model": "myapp.review",
+  "pk": 1,
+  "fields": {
+    "reviewer": "modi11x@uwindsor.ca",
+    "course": 1,
+    "rating": 5,
+    "comments": "I liked the course very much",
+    "date": "2020-11-22"
+  }
+}
+]

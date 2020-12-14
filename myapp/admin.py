@@ -1,18 +1,31 @@
 from django.contrib import admin
 from  .models import Topic, Course, Student, Order, Review
-
-
-class TopicAdmin(admin.ModelAdmin):
-    list_display = ('name', 'length')
+from decimal import Decimal
 
 
 class CourseAdmin(admin.ModelAdmin):
     fields = [('title', 'topic'), ('price', 'num_reviews', 'for_everyone')]
     list_display = ('title', 'topic', 'price')
+    actions = ['reduce_price']
+
+    def reduce_price(self, request, queryset):
+        for course in queryset:
+            course.price = course.price * Decimal.from_float(0.9)
+            course.save()
+    reduce_price.short_description = "Reduce Course Price by 10%%"
+
+
+class CourseInline(admin.TabularInline):
+    model = Course
+
+
+class TopicAdmin(admin.ModelAdmin):
+    list_display = ('name', 'length')
+    inlines = [CourseInline]
 
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name')
+    list_display = ('first_name', 'last_name', 'level', 'get_registered_courses')
 
 
 class OrderAdmin(admin.ModelAdmin):

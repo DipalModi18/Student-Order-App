@@ -37,3 +37,7 @@ class ReviewForm(forms.ModelForm):
         labels = {'reviewer': "Please enter a valid email",
                   'rating': "Rating: An integer between 1 (worst) and 5 (best)", }
 
+
+class ForgotPasswordForm(forms.Form):
+    username = forms.CharField(max_length=50)
+

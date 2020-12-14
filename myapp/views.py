@@ -3,16 +3,24 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import Topic, Course, Student, Order
 from django.shortcuts import get_object_or_404, render
-from .forms import SearchForm, OrderForm, ReviewForm
+from .forms import SearchForm, OrderForm, ReviewForm, ForgotPasswordForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from datetime import datetime
+from django.views import View
+from django.core.mail import send_mail
 
 
 # Create your views here.
-def index(request):
-    top_list = Topic.objects.all().order_by('id')[:10]
-    return render(request, 'myapp/index.html', {'top_list': top_list})
+# def index(request):
+#     top_list = Topic.objects.all().order_by('id')[:10]
+#     return render(request, 'myapp/index.html', {'top_list': top_list})
+
+
+class IndexView(View):
+    def get(self, request):
+        top_list = Topic.objects.all().order_by('id')[:10]
+        return render(request, 'myapp/index.html', {'top_list': top_list})
 
 
 def about(request):
@@ -27,10 +35,17 @@ def about(request):
     return response
 
 
-def detail(request, topic_id):
-    topic = get_object_or_404(Topic, id=topic_id)
-    courses = Course.objects.filter(topic=Topic.objects.get(id=1))
-    return render(request, 'myapp/detail.html', {'topic': topic, 'courses': courses})
+# def detail(request, topic_id):
+#     topic = get_object_or_404(Topic, id=topic_id)
+#     courses = Course.objects.filter(topic=Topic.objects.get(id=1))
+#     return render(request, 'myapp/detail.html', {'topic': topic, 'courses': courses})
+
+
+class DetailView(View):
+    def get(self, request, topic_id):
+        topic = get_object_or_404(Topic, id=topic_id)
+        courses = Course.objects.filter(topic=Topic.objects.get(id=1))
+        return render(request, 'myapp/detail.html', {'topic': topic, 'courses': courses})
 
 
 def findcourses(request):
@@ -94,8 +109,21 @@ def review_view(request):
         else:
             return HttpResponse("Invalid Data")
     else:
-        form = ReviewForm()
-        return render(request, 'myapp/review.html', {'form': form})
+        form = None
+        error_msg = None
+        try:
+            current_user = Student.objects.get(id=request.user.id)
+        except Student.DoesNotExist:
+            current_user = None
+        if current_user:
+            level = current_user.level
+            if current_user.level not in ('UG', 'PG'):
+                error_msg = "Only Undergraduate or Postgraduate students can submit the review."
+            else:
+                form = ReviewForm()
+        else:
+            error_msg = "Please sign-in to submit a review."
+        return render(request, 'myapp/review.html', {'form': form, 'error_msg': error_msg})
 
 
 def user_login(request):
@@ -140,3 +168,33 @@ def myaccount(request):
                                                        'registered_courses': registered_courses})
     else:
         return HttpResponse("<p>You are not a registered student</p>")
+
+
+def forgot_password(request):
+    if request.method == 'POST':
+        form = ForgotPasswordForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            try:
+                user = Student.objects.get(username=username)
+            except Student.DoesNotExist:
+                user = None
+
+            if user:
+                email_address = user.email
+                new_password = "{}1234".format(username)
+                email_content = "Your new password is {}".format(new_password)
+                message = "New password has been sent to your registered email address {}".format(email_address)
+                send_mail(
+                    subject='New Password',
+                    message=email_content,
+                    from_email="modidipal18@gmail.com",
+                    recipient_list=[email_address]
+                )
+                return render(request, 'myapp/forgot_password.html', {'form': form, 'message': message})
+            else:
+                message = "Provided Username does not exists"
+                return render(request, 'myapp/forgot_password.html', {'form': form, 'message': message})
+    else:
+        form = ForgotPasswordForm()
+        return render(request, 'myapp/forgot_password.html', {'form': form})

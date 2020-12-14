@@ -1,7 +1,9 @@
 {% extends 'myapp/base.html' %}
 
 {% block myhdg %}
-    {{ error_msg }}
+    {% if error_msg %}
+        {{ error_msg }}
+    {% endif %}
 {% endblock %}
 
 {% block body_block %}

@@ -2,6 +2,7 @@ from django.db import models
 import datetime
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 
 # Create your models here.
@@ -13,10 +14,15 @@ class Topic(models.Model):
         return self.name
 
 
+def validate_price(price):
+    if price < 50 or price > 500:
+        raise ValidationError('Price should be between 50$ to 500$')
+
+
 class Course(models.Model):
     title = models.CharField(max_length=200)
     topic = models.ForeignKey(Topic, related_name='courses', on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[validate_price])
     for_everyone = models.BooleanField(default=True)
     description = models.TextField(blank=True)
     num_reviews = models.PositiveIntegerField(default=0)
@@ -37,9 +43,14 @@ class Student(User):
     province = models.CharField(max_length=2, default='ON')
     registered_courses = models.ManyToManyField(Course, blank=True)
     interested_in = models.ManyToManyField(Topic)
+    image = models.ImageField(upload_to='uploads/', blank=True)
 
     def __str__(self):
         return "Student Name: {} {} || Address: {}, {}".format(self.first_name, self.last_name, self.address, self.province)
+
+    def get_registered_courses(self):
+        return ", ".join([course.title for course in self.registered_courses.all()])
+    get_registered_courses.short_description = 'Registered Courses'
 
 
 class Order(models.Model):
