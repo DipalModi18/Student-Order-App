@@ -4,7 +4,7 @@
     <form action="{% url 'myapp:findcourses' %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" name="submit1" value="Find Courses" />
+        <input type="submit" name="submit1" value="Find Courses" class="button"/>
     </form>
 
 {% endblock %}

@@ -7,16 +7,34 @@
     </head>
     <body>
         <div>
-            <h1>{% block myhdg %}Hello User {% endblock %}</h1>
+            <h1>
+                {% block myhdg %}Hello {{ first_name }}!
+                {% endblock %}
+            </h1>
+
             {% block body_block %}*** {% endblock %}
         </div>
         <hr />
         <div>
         	<ul>
                 <li class="hbar1"><a href="/myapp/about">Find out about this site</a></li>
-                <li class="hbar1"><a href = "{% url 'myapp:index' %}">Click here to return to main page</a><br/></li>
+                <li class="hbar1"><a href = "{% url 'myapp:index' %}">Click here to return to main page</a></li>
                 <li class="hbar1"><a href="{% url 'myapp:findcourses' %}">Browse Courses</a></li>
                 <li class="hbar1"><a href="{% url 'myapp:place_order' %}">Place Order</a></li>
+                <br />
+                <li class="hbar1"><a href="{% url 'myapp:myaccount' %}">My Account</a></li>
+                <li class="hbar1"><a href="{% url 'myapp:review_view' %}">Add Course Review</a></li>
+                <li class="hbar1"><a href="{% url 'myapp:myOrder' %}">My Orders</a></li>
+                {% if first_name == "User" %}
+                    <li class="hbar1"><a href="{% url 'myapp:login' %}">Login</a></li>
+                    <li class="hbar1"><a href="{% url 'myapp:register' %}">Register</a></li>
+
+                {% else %}
+                    <li class="hbar1"><a href="{% url 'myapp:logout' %}">Logout</a></li>
+                {% endif %}
+
+
+
             </ul>
         </div>
     </body>

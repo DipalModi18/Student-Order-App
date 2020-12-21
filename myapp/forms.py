@@ -1,5 +1,7 @@
 from django import forms
-from myapp.models import Order, Review
+from django.contrib.auth.forms import UserCreationForm
+
+from myapp.models import Order, Review, Student
 from django.core.exceptions import ValidationError
 
 
@@ -19,6 +21,10 @@ class SearchForm(forms.Form):
     length = forms.TypedChoiceField(widget=forms.RadioSelect, choices=LENGTH_CHOICES, coerce=int,
                                     label="Preferred course duration:", required=False, empty_value=0)
     max_price = forms.IntegerField(label="Maximum Price", validators=[validate_max_price])
+
+class loginForm(forms.Form):
+    username = forms.CharField(max_length=100)
+    password = forms.CharField(widget=forms.PasswordInput)
 
 
 class OrderForm(forms.ModelForm):
@@ -40,4 +46,10 @@ class ReviewForm(forms.ModelForm):
 
 class ForgotPasswordForm(forms.Form):
     username = forms.CharField(max_length=50)
+
+class RegisterForm(UserCreationForm):
+    class Meta:
+        model = Student
+        fields = ['first_name', 'last_name', 'username', 'email', 'level', 'address', 'province', 'registered_courses',
+                  'interested_in']
 

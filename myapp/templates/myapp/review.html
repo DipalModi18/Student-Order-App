@@ -10,7 +10,7 @@
     <form action="{% url 'myapp:review_view' %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" name="submit1" value="Post Review" />
+        <input type="submit" name="submit1" value="Post Review" class="button"/>
     </form>
 
 {% endblock %}

@@ -1,17 +1,17 @@
 [
 {
   "model": "myapp.topic",
-  "pk": 1,
+  "pk": 20,
   "fields": {
-    "name": "My Topic",
+    "name": "My Topic 2",
     "length": 10
   }
 },
 {
   "model": "myapp.course",
-  "pk": 17,
+  "pk": 20,
   "fields": {
-    "title": "My Course",
+    "title": "My Course 2",
     "topic": 4,
     "price": "89.99",
     "for_everyone": true,
@@ -21,7 +21,7 @@
 },
 {
   "model": "myapp.student",
-  "pk": 3,
+  "pk": 20,
   "fields": {
     "level": "HS",
     "address": "3403 Peter Street",
@@ -40,7 +40,7 @@
 },
 {
   "model": "myapp.order",
-  "pk": 1,
+  "pk": 20,
   "fields": {
     "student": 2,
     "order_status": 1,
@@ -53,7 +53,7 @@
 },
 {
   "model": "myapp.review",
-  "pk": 1,
+  "pk": 20,
   "fields": {
     "reviewer": "modi11x@uwindsor.ca",
     "course": 1,

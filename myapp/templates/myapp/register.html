@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'myapp/style1.css' %}"/>
+    <title>Title</title>
+</head>
+<body>
+    <form action="{% url 'myapp:register' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" name="submit1" value="Register" class="button"/>
+    </form>
+</body>
+</html>
