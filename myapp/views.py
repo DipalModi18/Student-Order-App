@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .models import Topic, Course, Student, Order
+from .models import Topic, Course, Student, Order, City, Team
 from django.shortcuts import get_object_or_404, render
 from .forms import SearchForm, OrderForm, ReviewForm, ForgotPasswordForm, RegisterForm, loginForm
 from django.contrib.auth import authenticate, login, logout
@@ -283,3 +283,4 @@ def register(request):
     else:
         form = RegisterForm()
         return render(request, 'myapp/register.html', {'form': form})
+

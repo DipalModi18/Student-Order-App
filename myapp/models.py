@@ -1,6 +1,7 @@
 from django.db import models
 import datetime
 from django.contrib.auth.models import User
+from django.db.models import CASCADE
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
@@ -84,3 +85,25 @@ class Review(models.Model):
         return "Reviewer {} has provided rating {} for the Course {}".format(self.reviewer, self.course, self.rating)
 
 
+class City(models.Model):
+  name = models.CharField(max_length=100, unique=True)
+  population = models.IntegerField()
+
+  def __str__(self):
+    return self.name
+
+
+class Team(models.Model):
+  name = models.CharField(max_length=50)
+  sport = models.CharField(max_length=50)
+  city = models.ForeignKey(City, on_delete=CASCADE)
+
+  def __str__(self):
+    return self.name
+
+class Player(models.Model):
+  name = models.CharField(max_length=50)
+  teams = models.ManyToManyField(Team)
+
+  def __str__(self):
+    return self.name
